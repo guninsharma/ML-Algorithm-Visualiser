@@ -67,7 +67,6 @@ src/main/resources/mlvisualizer/style.css  JavaFX stylesheet
 tests/AlgorithmReview.java       Plain Java mathematical checks
 screenshots/                    Actual JavaFX scene snapshots
 PROJECT_REPORT.md               Design, formulas, and test results
-VIVA_PREP.md                    Questions and short answers
 ```
 
 ## Algorithms and class hierarchy
