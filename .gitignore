@@ -1,0 +1,7 @@
+out/
+target/
+apache-maven*/
+apache-maven.zip
+.m2repo/
+tmp/
+submission/

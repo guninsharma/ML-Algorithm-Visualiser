@@ -1,0 +1,22 @@
+.root { -fx-font-family: "Segoe UI", "Arial"; -fx-font-size: 13px; -fx-background-color: #f3f6fb; }
+.sidebar { -fx-background-color: #172b4d; -fx-padding: 24; }
+.sidebar .label { -fx-text-fill: #edf3fd; }
+.sidebar .heading { -fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: white; }
+.sidebar .field-label { -fx-font-size: 11px; -fx-text-fill: #b9c8df; }
+.button { -fx-background-color: #e4ebf5; -fx-text-fill: #193252; -fx-background-radius: 9; -fx-padding: 9 14; -fx-cursor: hand; }
+.button:hover { -fx-background-color: #d3e0f2; }
+.button.primary, .sidebar .button { -fx-background-color: #326ad0; -fx-text-fill: white; }
+.combo-box, .spinner, .text-field { -fx-background-radius: 8; -fx-background-color: white; }
+.toolbar, .info { -fx-background-color: white; -fx-background-radius: 12; -fx-padding: 12; }
+.info { -fx-min-height: 82; }
+.card { -fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #e0e7f1; -fx-border-radius: 12; }
+.split-pane { -fx-background-color: transparent; }
+.split-pane-divider { -fx-background-color: #f3f6fb; }
+.tree-node { -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 5; -fx-alignment: center; }
+.tree-node .label { -fx-text-fill: #1d3454; -fx-font-size: 10px; }
+.decision-node { -fx-background-color: #dceaff; -fx-border-color: #8eb7ef; }
+.leaf-node { -fx-background-color: #def4e9; -fx-border-color: #8bd5af; }
+.pending-node { -fx-background-color: #eef1f6; -fx-border-color: #c1ccda; }
+.active-node, .path-node { -fx-border-color: #f1a52b; -fx-border-width: 3; }
+.path-node { -fx-background-color: #fff0c8; }
+.branch-label { -fx-background-color: white; -fx-padding: 2 4; -fx-text-fill: #60738d; }
