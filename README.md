@@ -1,103 +1,71 @@
-# ML Algorithm Visualizer
+# ML Algorithm Visualiser
 
-A JavaFX desktop application for exploring four machine learning algorithms one step at a time. The calculations are written in Java without an ML library. The project is designed to demonstrate core university Java OOP concepts through a visual, interactive example.
+I made this as my final OOP project after finishing my university OOP course and studying these algorithms in my ML course. In class, I could follow the formulas on paper, but I wanted to see what actually changes at each step. So I built a small desktop app where I can pause an algorithm, move it forward once, and watch the result on a graph.
 
-## Features
+The math is written by hand in Java from what I learned in the ML course. There is no machine learning library doing the clustering, splitting, fitting, or voting for me. JavaFX handles the interface; the algorithms live in their own classes.
 
-- **K-Means:** assign points to the nearest centroid, then move centroids to cluster means. Points and crosses are color coded.
-- **Decision Tree:** expand one node per step using Gini impurity. Inspect split conditions, samples, predictions, and a test point's path. Zoom and pan the tree.
-- **Linear Regression:** update a line by batch gradient descent. View slope, intercept, and mean squared error (MSE).
-- **K-Nearest Neighbors (KNN):** calculate distances, reveal the K nearest points, then show the majority vote.
-- Manual **Next Step**, **Reset**, **Generate Data**, and automatic **Play/Pause**. A slider sets the delay between steps.
-- Input validation with readable JavaFX error dialogs. Changing algorithms or datasets pauses playback.
+![Decision tree after its first split](screenshots/decision-tree.png)
 
-## Technologies and requirements
+## What the app shows
 
-| Item | Version or use |
+| Algorithm | What you can watch |
 |---|---|
-| Java | Source and target compatibility: 17 |
-| JavaFX | 21.0.6 Controls, Graphics, Canvas, nodes, CSS |
-| Maven | Builds the project and downloads JavaFX; Maven 3.9.x recommended |
-| Other dependencies | None; no ML library or database |
+| K-Means | Points join the nearest centroid, then the centroids move to the mean of each cluster. |
+| Decision Tree | One node expands at a time. The tree shows the split condition, Gini impurity, sample count, and predicted class. |
+| Linear Regression | The line changes after each gradient descent update. The current slope, intercept, and MSE are shown below the graph. |
+| K-Nearest Neighbors (KNN) | Distances are calculated, the nearest points are highlighted, and their votes produce a class prediction. |
 
-Install a JDK 17 or newer and Maven. Ensure `java`, `javac`, and `mvn` are available on PATH. An internet connection is needed on the first Maven run to download JavaFX.
+**Next Step** does one step. **Play** runs steps automatically, **Pause** holds the current state, and **Reset** starts the selected algorithm again on the same data. The speed slider changes the delay between steps. For the tree and KNN, I can click the graph to choose a test point. The tree view also has zoom and pan controls.
 
-## Build, run, and test
+The app generates its own 2D data so it is quick to try each algorithm. The points are different on each run.
 
-From the folder containing `pom.xml`:
+## Running it
 
-```powershell
+You need a JDK **17 or newer**, **Maven**, and a desktop environment that can open a JavaFX window. From the folder with `pom.xml`, run:
+
+```bash
 mvn clean package
 mvn javafx:run
 ```
 
-Run the dependency-free algorithm review after building:
+Maven downloads JavaFX the first time. The project uses JavaFX **21.0.6** (Controls and Graphics); it does not need a database or an ML dependency.
 
-```powershell
+To run the small mathematical checks after building:
+
+```bash
 javac --release 17 -cp target/classes -d target/test-classes tests/AlgorithmReview.java
 java -cp 'target/classes;target/test-classes' AlgorithmReview
 ```
 
-On macOS or Linux, use `:` in the last command's classpath instead of `;`. The app is a desktop GUI and needs a graphical environment.
+The last command is written for Windows PowerShell. On macOS or Linux, replace the `;` in the classpath with `:`.
 
-## Using the application
+## Where the OOP work is
 
-1. Select an algorithm, choose parameters, and click **Generate Data**. The data is synthetic and differs for each algorithm.
-2. Use **Next Step** for one operation, or **Play** for automatic steps. **Pause** preserves progress. **Reset** restarts the current algorithm on the same data.
-3. For a decision tree, set maximum depth from 1 to 15 (default 5) and minimum samples per leaf (default 2). After construction, enter X/Y and classify, or click the scatter plot. Use `+`, `-`, `100%`, and scrolling/dragging to explore the tree.
-4. For KNN, select a test point by clicking the graph or entering X/Y and pressing **Select test point**. The first step computes distances; the next K steps reveal neighbors; the final step votes.
-5. For regression, adjust the learning rate and maximum iterations. Each step makes one gradient descent update.
+I used one abstract parent class, `MLAlgorithm`, for the operations every algorithm needs: `nextStep()`, `reset()`, and `isComplete()`. `KMeans`, `DecisionTree`, `LinearRegression`, and `KNN` extend it. The JavaFX class `Main` keeps an `MLAlgorithm` reference, so the same **Next Step** button calls different code depending on the algorithm selected. That is the main inheritance and runtime polymorphism example in this project.
 
-## Project files
+`DataPoint` and `TreeNode` keep their fields private. I used `ArrayList<DataPoint>` for datasets and tree samples because their sizes change, and arrays where the shape is fixed: `double[][]` for K-Means centroids and `double[]` for KNN distances. `InvalidParameterException` covers bad inputs and the GUI shows a readable alert. `AnimationWorker` is one background thread for playback timing; it hands each model and UI update back to the JavaFX Application Thread.
+
+The main files are:
 
 ```text
-pom.xml                         Maven configuration
 mlvisualizer/
-  Main.java                     JavaFX entry point and dashboard
-  MLAlgorithm.java              Abstract algorithm parent
-  DataPoint.java                2D sample and class/cluster data
-  KMeans.java                   Clustering math and steps
-  DecisionTree.java             Gini split search and construction
-  TreeNode.java                 Decision or leaf node
-  LinearRegression.java         Gradient descent and MSE
-  KNN.java                      Distance ranking and vote
-  AnimationWorker.java          One background timing thread
-  InvalidParameterException.java Input validation exception
-src/main/resources/mlvisualizer/style.css  JavaFX stylesheet
-tests/AlgorithmReview.java       Plain Java mathematical checks
-screenshots/                    Actual JavaFX scene snapshots
-PROJECT_REPORT.md               Design, formulas, and test results
+  Main.java                       JavaFX window and graphs
+  MLAlgorithm.java                abstract parent class
+  KMeans.java                     clustering steps
+  DecisionTree.java, TreeNode.java  Gini splits and tree nodes
+  LinearRegression.java           gradient descent
+  KNN.java                        distance ranking and voting
+  DataPoint.java                  sample data
+  AnimationWorker.java            playback timing thread
+  InvalidParameterException.java  input errors
+src/main/resources/mlvisualizer/style.css  interface styling
+tests/AlgorithmReview.java       plain Java checks
 ```
 
-## Algorithms and class hierarchy
+There is more detail, formulas, test results, and actual app screenshots in [the project report](PROJECT_REPORT.md). A [PDF copy](output/pdf/ML_Algorithm_Visualizer_Project_Report.pdf) is also included.
 
-```text
-MLAlgorithm (abstract)
-  +-- KMeans
-  +-- DecisionTree
-  +-- LinearRegression
-  +-- KNN
+## Things I kept simple
 
-Main (JavaFX Application) --> MLAlgorithm
-DecisionTree --> TreeNode
-KMeans / DecisionTree / KNN / LinearRegression --> DataPoint
-Main --> AnimationWorker
-```
+This is a learning project, so it uses generated data in memory rather than file imports or a database. The graph has two numeric features on a 0-100 scale, and classification is binary. The tree is capped at 127 nodes and depth 15; K-Means stops after convergence or 100 iterations. KNN classifies one test point at a time, with a tied vote going to class 0.
 
-`Main` stores the selected model as an `MLAlgorithm` and calls its overridden `nextStep()`, `reset()`, and `isComplete()` methods. Each subclass provides its own behavior.
-
-## OOP concepts demonstrated
-
-- **Class hierarchy, inheritance, and polymorphism:** four subclasses extend `MLAlgorithm`; `Main` uses the parent reference at runtime.
-- **Encapsulation:** `DataPoint` and `TreeNode` keep fields private and expose methods to read or update them.
-- **Arrays and ArrayList:** K-Means stores centroid coordinates in `double[][]`; KNN stores distances in `double[]`; point collections and tree samples use `ArrayList<DataPoint>`.
-- **Exceptions:** `InvalidParameterException` reports bad parameters and inputs; the GUI catches errors and shows alerts.
-- **Multithreading:** `AnimationWorker` sleeps between steps on a daemon thread. It schedules model changes and drawing on the JavaFX Application Thread.
-
-## Known limitations
-
-- Datasets are randomly generated in memory; there is no import, export, or saved model.
-- The plot uses two features on a 0-100 coordinate plane; classification is binary.
-- K-Means stops when centroids stabilize or after 100 iterations. The tree is limited to depth 15 and 127 nodes. Data generation allows 1-100 points.
-- KNN classifies one selected test point at a time. A tied vote predicts class 0.
-- JavaFX requires a graphical desktop. The included automated UI check exercised controls and resizing, but physical mouse drag behavior was not independently verified.
+I tested the algorithms with small known datasets and checked the JavaFX controls with a programmatic scene test. The app's screenshots are from that run. I have not separately tested freehand mouse dragging for tree panning.
